@@ -2,7 +2,7 @@
 customtkinter==5.2.2
 
 # Traitement des images (pour les pochettes)
-Pillow==10.2.0
+Pillow==10.4.0
 
 # Lecture/écriture des tags audio
 mutagen==1.47.0
