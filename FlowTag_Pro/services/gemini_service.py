@@ -36,7 +36,8 @@ class GeminiDiscogsService:
         if gemini_api_key:
             try:
                 genai.configure(api_key=gemini_api_key)
-                self.gemini_model = genai.GenerativeModel('gemini-pro')
+                # Utiliser le nouveau modèle Gemini 1.5 Flash (plus rapide et gratuit)
+                self.gemini_model = genai.GenerativeModel('gemini-1.5-flash')
                 print("✅ Gemini AI configuré avec succès (1,500 req/jour gratuits)")
             except Exception as e:
                 print(f"⚠️ Erreur Gemini: {e}")
@@ -153,8 +154,24 @@ class GeminiDiscogsService:
 
 Retourne UNIQUEMENT le JSON, rien d'autre."""
 
-            # Appel à Gemini
-            response = self.gemini_model.generate_content(prompt)
+            # Appel à Gemini avec gestion de sécurité
+            generation_config = genai.GenerationConfig(
+                temperature=0.7,
+                top_p=0.8,
+                top_k=40,
+                max_output_tokens=1024,
+            )
+            
+            response = self.gemini_model.generate_content(
+                prompt,
+                generation_config=generation_config,
+                safety_settings={
+                    "HARM_CATEGORY_HARASSMENT": "BLOCK_NONE",
+                    "HARM_CATEGORY_HATE_SPEECH": "BLOCK_NONE",
+                    "HARM_CATEGORY_SEXUALLY_EXPLICIT": "BLOCK_NONE",
+                    "HARM_CATEGORY_DANGEROUS_CONTENT": "BLOCK_NONE",
+                }
+            )
             
             if response and response.text:
                 # Parser la réponse

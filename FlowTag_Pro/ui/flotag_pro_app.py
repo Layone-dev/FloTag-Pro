@@ -22,7 +22,7 @@ class FloTagProApp(customtkinter.CTk):
 
         # --- Configuration de la fenêtre ---
         self.title("FloTag Pro 🎵")
-        self.geometry("1100x750")
+        self.geometry("1400x800")  # Plus large pour les colonnes
         customtkinter.set_appearance_mode("Dark")
         customtkinter.set_default_color_theme("blue")
 
@@ -101,21 +101,43 @@ class FloTagProApp(customtkinter.CTk):
         style.configure("Treeview", 
                        background="#2b2b2b", 
                        foreground="white", 
-                       fieldbackground="#2b2b2b")
+                       fieldbackground="#2b2b2b",
+                       rowheight=30)  # Plus de hauteur pour les lignes
         style.configure("Treeview.Heading", 
                        background="#1f1f1f", 
-                       foreground="white")
+                       foreground="white",
+                       font=('Arial', 10, 'bold'))
+        style.map('Treeview',
+                 background=[('selected', '#4CAF50')])
 
-        columns = ("STATUS", "FICHIER", "ARTISTE", "TITRE")
+        # COLONNES OPTIMISÉES POUR DJ
+        columns = ("STATUS", "ARTISTE", "TITRE", "GENRE", "BPM", "KEY", "ENERGY", "CONTEXTES", "STYLES", "LABEL")
         self.track_list = ttk.Treeview(list_frame, columns=columns, show="headings")
-        self.track_list.heading("STATUS", text="Statut")
-        self.track_list.heading("FICHIER", text="Fichier")
-        self.track_list.heading("ARTISTE", text="Artiste")
-        self.track_list.heading("TITRE", text="Titre")
-        self.track_list.column("STATUS", width=100, anchor="center")
-        self.track_list.column("FICHIER", width=350)
-        self.track_list.column("ARTISTE", width=250)
-        self.track_list.column("TITRE", width=350)
+        
+        # Configuration des en-têtes
+        self.track_list.heading("STATUS", text="✓")
+        self.track_list.heading("ARTISTE", text="🎤 Artiste")
+        self.track_list.heading("TITRE", text="🎵 Titre")
+        self.track_list.heading("GENRE", text="🎭 Genre")
+        self.track_list.heading("BPM", text="BPM")
+        self.track_list.heading("KEY", text="🎹 Key")
+        self.track_list.heading("ENERGY", text="⚡")
+        self.track_list.heading("CONTEXTES", text="💭 Contextes/Moments")
+        self.track_list.heading("STYLES", text="🎯 Styles")
+        self.track_list.heading("LABEL", text="🏷️ Label")
+        
+        # Configuration des largeurs
+        self.track_list.column("STATUS", width=40, anchor="center", minwidth=40)
+        self.track_list.column("ARTISTE", width=150, anchor="w", minwidth=100)
+        self.track_list.column("TITRE", width=200, anchor="w", minwidth=150)
+        self.track_list.column("GENRE", width=140, anchor="w", minwidth=100)
+        self.track_list.column("BPM", width=50, anchor="center", minwidth=50)
+        self.track_list.column("KEY", width=50, anchor="center", minwidth=50)
+        self.track_list.column("ENERGY", width=50, anchor="center", minwidth=50)
+        self.track_list.column("CONTEXTES", width=220, anchor="w", minwidth=150)
+        self.track_list.column("STYLES", width=200, anchor="w", minwidth=150)
+        self.track_list.column("LABEL", width=150, anchor="w", minwidth=100)
+        
         self.track_list.grid(row=0, column=0, sticky="nsew")
         self.track_list.bind("<Double-1>", self._on_double_click_item)
 
@@ -123,6 +145,11 @@ class FloTagProApp(customtkinter.CTk):
         scrollbar = ttk.Scrollbar(list_frame, orient="vertical", command=self.track_list.yview)
         scrollbar.grid(row=0, column=1, sticky="ns")
         self.track_list.configure(yscrollcommand=scrollbar.set)
+        
+        # Scrollbar horizontale pour les colonnes larges
+        h_scrollbar = ttk.Scrollbar(list_frame, orient="horizontal", command=self.track_list.xview)
+        h_scrollbar.grid(row=1, column=0, sticky="ew")
+        self.track_list.configure(xscrollcommand=h_scrollbar.set)
 
         # Barre de progression
         self.progress_bar = customtkinter.CTkProgressBar(self.main_container)
@@ -280,17 +307,17 @@ class FloTagProApp(customtkinter.CTk):
         """Méthode de test pour accéder directement à la vue détaillée."""
         # Créer des données de test
         test_data = {
-            'title': 'Titre de Test',
-            'artist': 'Artiste de Test', 
-            'album': 'Album de Test',
-            'year': '2024',
-            'genre': 'Electronic',
-            'key': 'C minor',
-            'bpm': '128',
-            'energy': 7,
-            'comment_tags': ['#[Soirée]', '#[Dansant]', '#[Commercial]'],
-            'grouping_tags': ['#House', '#Progressive'],
-            'label': '🇫🇷 France | Sample: Daft Punk - One More Time',
+            'title': 'It Was A Good Day',
+            'artist': 'Ice Cube', 
+            'album': 'Greatest Hits',
+            'year': '1993',
+            'genre': 'West Coast Hip-Hop',
+            'key': 'Gm',
+            'bpm': '82',
+            'energy': 8,
+            'comment_tags': ['#Club #Warmup', '#Bar #Peaktime'],
+            'grouping_tags': ['#Classics', '#HipHop', '#Gangsta', '#90s'],
+            'label': '🇺🇸 USA',
             'artwork_bytes': None
         }
         
@@ -330,9 +357,9 @@ class FloTagProApp(customtkinter.CTk):
                 except ValueError:
                     artist, title = "Inconnu", filename
                 
-                # Ajouter à la liste visuelle
+                # Ajouter à la liste visuelle avec toutes les colonnes vides pour l'instant
                 self.track_list.insert("", "end", values=(
-                    "En attente", filename, artist, title
+                    "⏳", artist, title, "", "", "", "", "", "", ""
                 ))
 
     def analyze_all_tracks(self):
@@ -360,7 +387,7 @@ class FloTagProApp(customtkinter.CTk):
         for i, file_path in enumerate(self.file_paths):
             try:
                 # Mettre à jour le statut
-                self.after(0, self.update_track_status_in_ui, file_path, "En cours...")
+                self.after(0, self.update_track_status_in_ui, file_path, "🔄", None)
                 
                 # Analyser le fichier
                 analysis_result = await self.orchestrator.analyze_file(file_path)
@@ -368,8 +395,8 @@ class FloTagProApp(customtkinter.CTk):
                 # Stocker le résultat
                 self.all_track_data[file_path] = analysis_result
                 
-                # Mettre à jour l'UI
-                self.after(0, self.update_track_status_in_ui, file_path, "✅ Analysé", analysis_result)
+                # Mettre à jour l'UI avec toutes les données
+                self.after(0, self.update_track_status_in_ui, file_path, "✅", analysis_result)
                 
                 # Mettre à jour la barre de progression
                 progress = (i + 1) / total_files
@@ -377,7 +404,28 @@ class FloTagProApp(customtkinter.CTk):
                 
             except Exception as e:
                 print(f"Erreur analyse {file_path}: {e}")
-                self.after(0, self.update_track_status_in_ui, file_path, f"❌ Erreur")
+                self.after(0, self.update_track_status_in_ui, file_path, "❌", None)
+
+    def format_tags_for_display(self, tags_list, max_length=30):
+        """Formate une liste de tags pour l'affichage compact."""
+        if not tags_list:
+            return ""
+        
+        # Nettoyer et joindre les tags
+        clean_tags = []
+        for tag in tags_list:
+            # Enlever les crochets et hashtags pour un affichage plus propre
+            clean_tag = tag.replace('#[', '').replace(']', '').replace('#', '')
+            clean_tags.append(clean_tag)
+        
+        # Joindre avec des virgules
+        result = ", ".join(clean_tags)
+        
+        # Tronquer si trop long
+        if len(result) > max_length:
+            result = result[:max_length-3] + "..."
+        
+        return result
 
     def update_track_status_in_ui(self, file_path, status, analysis_result=None):
         """Met à jour le statut d'un morceau dans l'interface utilisateur."""
@@ -385,22 +433,45 @@ class FloTagProApp(customtkinter.CTk):
         
         # Trouver l'item dans la liste
         for item in self.track_list.get_children():
-            values = self.track_list.item(item, "values")
-            if values[1] == filename:  # Comparer par nom de fichier
-                if analysis_result:
-                    # Mettre à jour avec les données d'analyse
+            values = list(self.track_list.item(item, "values"))
+            # Chercher par artiste et titre ou par nom de fichier
+            if analysis_result:
+                # Comparer par artiste et titre après analyse
+                if values[1] == analysis_result.get('artist', '') and values[2] == analysis_result.get('title', ''):
+                    # Formater les données pour l'affichage
+                    comment_tags = analysis_result.get('comment_tags', [])
+                    grouping_tags = analysis_result.get('grouping_tags', [])
+                    
+                    # Extraire l'énergie si elle est dans l'analysis_result
+                    energy_value = ""
+                    if 'energy' in analysis_result:
+                        try:
+                            energy_value = str(int(analysis_result['energy']))
+                        except:
+                            energy_value = ""
+                    
                     new_values = (
                         status,
-                        values[1],  # Garder le nom de fichier
-                        analysis_result.get('artist', values[2]),
-                        analysis_result.get('title', values[3])
+                        analysis_result.get('artist', values[1]),
+                        analysis_result.get('title', values[2]),
+                        analysis_result.get('genre', ''),
+                        str(analysis_result.get('bpm', '')) if analysis_result.get('bpm') else '',
+                        analysis_result.get('key', ''),
+                        energy_value,
+                        self.format_tags_for_display(comment_tags),
+                        self.format_tags_for_display(grouping_tags),
+                        analysis_result.get('label', '').replace('Label: ', '')  # Enlever le préfixe
                     )
-                else:
+                    self.track_list.item(item, values=new_values)
+                    break
+            else:
+                # Avant analyse, utiliser le nom d'artiste/titre extrait du nom de fichier
+                original_filename = f"{values[1]} - {values[2]}"
+                if filename.startswith(original_filename) or filename == values[2]:
                     # Juste mettre à jour le statut
-                    new_values = (status, values[1], values[2], values[3])
-                
-                self.track_list.item(item, values=new_values)
-                break
+                    values[0] = status
+                    self.track_list.item(item, values=values)
+                    break
 
     def _on_double_click_item(self, event):
         """Gère le double-clic sur un élément de la liste."""
@@ -410,10 +481,25 @@ class FloTagProApp(customtkinter.CTk):
         
         item = selection[0]
         values = self.track_list.item(item, "values")
-        filename = values[1]
         
-        # Trouver le chemin complet
-        full_path = self.get_full_path_from_filename(filename)
+        # Récupérer artiste et titre
+        artist = values[1]
+        title = values[2]
+        
+        # Trouver le chemin complet basé sur l'artiste et le titre
+        full_path = None
+        for path, data in self.all_track_data.items():
+            if data.get('artist') == artist and data.get('title') == title:
+                full_path = path
+                break
+        
+        if not full_path:
+            # Essayer de trouver par nom de fichier
+            for path in self.file_paths:
+                if f"{artist} - {title}" in os.path.basename(path):
+                    full_path = path
+                    break
+        
         if not full_path:
             messagebox.showerror("Erreur", "Impossible de trouver le fichier.")
             return
@@ -554,7 +640,8 @@ class FloTagProApp(customtkinter.CTk):
             
             if success:
                 messagebox.showinfo("Succès", "Tags sauvegardés avec succès!")
-                self.update_track_status_in_ui(self.current_track_file_path, "💾 Sauvé")
+                # Mettre à jour l'affichage dans la liste principale
+                self.update_track_status_in_ui(self.current_track_file_path, "💾", track_data)
             else:
                 messagebox.showerror("Erreur", "Échec de la sauvegarde des tags.")
                 
@@ -588,10 +675,16 @@ class FloTagProApp(customtkinter.CTk):
             pill_frame = customtkinter.CTkFrame(parent_frame, fg_color="transparent")
             pill_frame.pack(side="left", padx=2, pady=2)
             
+            # Couleur différente selon le type de tag
+            if '[' in tag:  # Context/Moment
+                fg_color = "#4ECDC4"
+            else:  # Style
+                fg_color = "#FFD93D"
+            
             pill = customtkinter.CTkLabel(
                 pill_frame,
                 text=display_tag,
-                fg_color="#4ECDC4",
+                fg_color=fg_color,
                 text_color="black",
                 corner_radius=10,
                 padx=8,
@@ -639,22 +732,96 @@ class FloTagProApp(customtkinter.CTk):
         if not self.current_track_file_path:
             return
             
-        # Créer une fenêtre popup simple
-        editor = tk.Toplevel(self)
+        # Créer une fenêtre popup customtkinter
+        editor = customtkinter.CTkToplevel(self)
         editor.title("Éditer les tags")
-        editor.geometry("400x300")
+        editor.geometry("500x400")
+        editor.transient(self)
+        editor.grab_set()
+        
+        # Frame principal
+        main_frame = customtkinter.CTkFrame(editor)
+        main_frame.pack(fill="both", expand=True, padx=20, pady=20)
         
         # Instructions
-        tk.Label(editor, text="Entrez un nouveau tag:").pack(pady=10)
+        customtkinter.CTkLabel(
+            main_frame, 
+            text="Ajouter des tags personnalisés :",
+            font=("Arial", 16, "bold")
+        ).pack(pady=10)
         
         # Champ de saisie
-        tag_entry = tk.Entry(editor, width=30)
-        tag_entry.pack(pady=5)
+        tag_entry = customtkinter.CTkEntry(main_frame, placeholder_text="Entrez un tag", width=300)
+        tag_entry.pack(pady=10)
+        
+        # Frame pour les radio buttons
+        radio_frame = customtkinter.CTkFrame(main_frame, fg_color="transparent")
+        radio_frame.pack(pady=10)
         
         # Type de tag
         tag_type = tk.StringVar(value="context")
-        tk.Radiobutton(editor, text="Contexte/Moment", variable=tag_type, value="context").pack()
-        tk.Radiobutton(editor, text="Style", variable=tag_type, value="style").pack()
+        customtkinter.CTkRadioButton(
+            radio_frame, 
+            text="💭 Contexte/Moment", 
+            variable=tag_type, 
+            value="context"
+        ).pack(side="left", padx=10)
+        customtkinter.CTkRadioButton(
+            radio_frame, 
+            text="🎯 Style", 
+            variable=tag_type, 
+            value="style"
+        ).pack(side="left", padx=10)
+        
+        # Tags suggérés
+        suggestions_frame = customtkinter.CTkFrame(main_frame)
+        suggestions_frame.pack(fill="both", expand=True, pady=10)
+        
+        customtkinter.CTkLabel(
+            suggestions_frame, 
+            text="Tags suggérés :",
+            font=("Arial", 14)
+        ).pack(pady=5)
+        
+        # Scrollable frame pour les suggestions
+        suggestions_scroll = customtkinter.CTkScrollableFrame(suggestions_frame, height=150)
+        suggestions_scroll.pack(fill="both", expand=True, padx=10, pady=5)
+        
+        # Suggestions de contextes
+        context_suggestions = [
+            "Bar", "Club", "Mariage", "CorporateEvent", "Restaurant", 
+            "CocktailChic", "PoolParty", "Festival", "Warmup", "Peaktime", "Closing"
+        ]
+        
+        # Suggestions de styles  
+        style_suggestions = [
+            "Banger", "Classics", "Funky", "Ladies", "Commercial", 
+            "Latino", "HipHop", "House", "Deep", "Tech", "Vocal", 
+            "Disco", "Progressive", "Bootleg", "Mashup"
+        ]
+        
+        def update_suggestions(*args):
+            # Clear current suggestions
+            for widget in suggestions_scroll.winfo_children():
+                widget.destroy()
+            
+            # Get suggestions based on type
+            suggestions = context_suggestions if tag_type.get() == "context" else style_suggestions
+            
+            # Create suggestion buttons
+            for i, suggestion in enumerate(suggestions):
+                btn = customtkinter.CTkButton(
+                    suggestions_scroll,
+                    text=suggestion,
+                    width=100,
+                    height=30,
+                    command=lambda s=suggestion: tag_entry.insert(tk.END, s)
+                )
+                btn.grid(row=i//3, column=i%3, padx=5, pady=5)
+        
+        # Update suggestions when type changes
+        tag_type.trace('w', update_suggestions)
+        update_suggestions()  # Initial call
         
         def add_tag():
             new_tag = tag_entry.get().strip()
@@ -676,55 +843,46 @@ class FloTagProApp(customtkinter.CTk):
                 
                 tag_entry.delete(0, tk.END)
         
-        tk.Button(editor, text="Ajouter", command=add_tag).pack(pady=10)
-        tk.Button(editor, text="Fermer", command=editor.destroy).pack()
+        # Boutons d'action
+        button_frame = customtkinter.CTkFrame(main_frame, fg_color="transparent")
+        button_frame.pack(pady=10)
+        
+        customtkinter.CTkButton(
+            button_frame, 
+            text="➕ Ajouter", 
+            command=add_tag,
+            fg_color="green"
+        ).pack(side="left", padx=5)
+        
+        customtkinter.CTkButton(
+            button_frame, 
+            text="✅ Fermer", 
+            command=editor.destroy
+        ).pack(side="left", padx=5)
 
     def _open_settings(self):
         """Ouvre la fenêtre de configuration des APIs."""
-        # Fenêtre simple de configuration
-        settings = tk.Toplevel(self)
-        settings.title("Configuration des APIs")
-        settings.geometry("500x400")
+        # Importer ici pour éviter les imports circulaires
+        from .settings_dialog import SettingsDialog
         
         # Charger la config actuelle
         current_config = self._load_current_config()
         
-        # Créer les champs
-        fields = {
-            'SPOTIFY_CLIENT_ID': tk.StringVar(value=current_config.get('spotify_client_id', '')),
-            'SPOTIFY_CLIENT_SECRET': tk.StringVar(value=current_config.get('spotify_client_secret', '')),
-            'DISCOGS_TOKEN': tk.StringVar(value=current_config.get('discogs_token', '')),
-            'OPENAI_API_KEY': tk.StringVar(value=current_config.get('openai_api_key', ''))
-        }
+        # Ouvrir la fenêtre de dialogue
+        dialog = SettingsDialog(self, current_config)
+        self.wait_window(dialog)
         
-        row = 0
-        for key, var in fields.items():
-            tk.Label(settings, text=f"{key}:").grid(row=row, column=0, padx=10, pady=5, sticky="e")
-            entry = tk.Entry(settings, textvariable=var, width=40)
-            if 'SECRET' in key or 'KEY' in key or 'TOKEN' in key:
-                entry.config(show="*")
-            entry.grid(row=row, column=1, padx=10, pady=5)
-            row += 1
-        
-        def save_config():
-            # Sauvegarder dans .env
-            env_path = Path(__file__).parent.parent / '.env'
-            
-            with open(env_path, 'w') as f:
-                for key, var in fields.items():
-                    value = var.get()
-                    if value:
-                        f.write(f"{key}={value}\n")
-            
-            messagebox.showinfo("Succès", "Configuration sauvegardée. Veuillez redémarrer l'application.")
-            settings.destroy()
-        
-        tk.Button(settings, text="Sauvegarder", command=save_config).grid(row=row, column=0, columnspan=2, pady=20)
+        # Récupérer le résultat
+        if dialog.result:
+            messagebox.showinfo(
+                "Configuration mise à jour",
+                "Les clés API ont été sauvegardées.\nVeuillez redémarrer l'application pour appliquer les changements."
+            )
 
     def _load_current_config(self) -> Dict:
         """Charge la configuration actuelle depuis le fichier .env."""
         config = {}
-        env_path = Path(__file__).parent.parent / '.env'
+        env_path = Path(__file__).parent.parent.parent / '.env'
         
         if env_path.exists():
             try:
@@ -733,14 +891,7 @@ class FloTagProApp(customtkinter.CTk):
                         line = line.strip()
                         if line and not line.startswith('#') and '=' in line:
                             key, value = line.split('=', 1)
-                            if key == 'SPOTIFY_CLIENT_ID':
-                                config['spotify_client_id'] = value
-                            elif key == 'SPOTIFY_CLIENT_SECRET':
-                                config['spotify_client_secret'] = value
-                            elif key == 'DISCOGS_TOKEN':
-                                config['discogs_token'] = value
-                            elif key == 'OPENAI_API_KEY':
-                                config['openai_api_key'] = value
+                            config[key.lower()] = value
             except Exception as e:
                 print(f"Erreur lecture .env : {e}")
         

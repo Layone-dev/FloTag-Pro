@@ -25,7 +25,7 @@ class SettingsDialog(customtkinter.CTkToplevel):
         
         # Configuration de la fenêtre
         self.title("⚙️ Configuration des APIs - FloTag Pro")
-        self.geometry("650x750")  # Un peu plus grande pour bien voir Gemini
+        self.geometry("650x600")
         self.resizable(False, False)
         
         # Centrer la fenêtre
@@ -124,7 +124,7 @@ class SettingsDialog(customtkinter.CTkToplevel):
         self.gemini_key_entry = self._create_api_field(
             gemini_frame,
             "API Key :",
-            "Votre clé API Gemini (AIza...)",
+            "AIzaSyA6DMicshRobtHKGQ272m9CSVXgNlZSgCY",
             show_chars=False
         )
         

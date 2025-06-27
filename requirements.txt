@@ -33,4 +33,6 @@ aiohttp>=3.8.0
 
 # Utilitaires
 pyyaml>=6.0
-pathlib2>=2.3.7 
+pathlib2>=2.3.7 google-generativeai==0.8.5
+
+aiofiles==23.2.1
