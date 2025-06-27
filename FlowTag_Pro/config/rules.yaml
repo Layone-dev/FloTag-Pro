@@ -1,0 +1,242 @@
+# FlowTag Pro - Règles d'analyse ajustables
+
+# Configuration générale
+general:
+  cache_duration_days: 30
+  max_concurrent_requests: 5
+  request_timeout: 30
+  retry_attempts: 3
+
+# Analyse audio
+audio_analysis:
+  # Formats supportés
+  supported_formats:
+    - mp3
+    - m4a
+    - flac
+    - wav
+    - aiff
+    - ogg
+  
+  # Paramètres d'analyse
+  analysis_params:
+    sample_rate: 22050
+    hop_length: 512
+    n_fft: 2048
+    n_mels: 128
+    
+  # Seuils BPM
+  bpm_thresholds:
+    very_slow: [60, 80]
+    slow: [80, 100]
+    medium: [100, 130]
+    fast: [130, 150]
+    very_fast: [150, 180]
+    
+  # Seuils d'énergie
+  energy_thresholds:
+    very_low: [0.0, 0.2]
+    low: [0.2, 0.4]
+    medium: [0.4, 0.6]
+    high: [0.6, 0.8]
+    very_high: [0.8, 1.0]
+
+# Classification DJ
+dj_classification:
+  # Contextes d'événements
+  contexts:
+    mariage:
+      bpm_range: [60, 140]
+      energy_range: [0.2, 0.8]
+      keywords: ["romantique", "slow", "ballad", "love"]
+      weight: 1.0
+      
+    club:
+      bpm_range: [120, 180]
+      energy_range: [0.6, 1.0]
+      keywords: ["dance", "house", "techno", "edm"]
+      weight: 1.0
+      
+    cocktail:
+      bpm_range: [70, 130]
+      energy_range: [0.3, 0.7]
+      keywords: ["jazz", "lounge", "ambiance", "chill"]
+      weight: 1.0
+      
+    lounge:
+      bpm_range: [60, 100]
+      energy_range: [0.1, 0.5]
+      keywords: ["ambient", "chill", "relax", "détente"]
+      weight: 1.0
+      
+    after_party:
+      bpm_range: [100, 160]
+      energy_range: [0.5, 0.9]
+      keywords: ["after", "party", "fête", "festif"]
+      weight: 1.0
+
+  # Moments dans la soirée
+  moments:
+    ouverture:
+      bpm_range: [80, 120]
+      energy_range: [0.3, 0.6]
+      time_range: "19:00-21:00"
+      weight: 1.0
+      
+    warm_up:
+      bpm_range: [100, 130]
+      energy_range: [0.4, 0.7]
+      time_range: "21:00-22:30"
+      weight: 1.0
+      
+    peak_time:
+      bpm_range: [120, 160]
+      energy_range: [0.7, 1.0]
+      time_range: "22:30-01:30"
+      weight: 1.0
+      
+    cool_down:
+      bpm_range: [100, 130]
+      energy_range: [0.4, 0.6]
+      time_range: "01:30-02:30"
+      weight: 1.0
+      
+    fermeture:
+      bpm_range: [70, 110]
+      energy_range: [0.2, 0.5]
+      time_range: "02:30-03:00"
+      weight: 1.0
+
+# APIs
+apis:
+  # OpenAI
+  openai:
+    model: "gpt-4"
+    temperature: 0.3
+    max_tokens: 500
+    system_prompt: "Tu es un expert DJ événementiel spécialisé dans l'analyse musicale pour Serato."
+    
+  # Spotify
+  spotify:
+    max_playlists: 100
+    cache_duration_hours: 24
+    features_to_extract:
+      - danceability
+      - energy
+      - valence
+      - tempo
+      - key
+      - mode
+      
+  # Discogs
+  discogs:
+    cache_duration_hours: 168  # 7 jours
+    max_results: 5
+    search_fields:
+      - title
+      - artist
+      - genre
+      - style
+      - year
+
+# Tags Serato
+serato_tags:
+  # Format des tags
+  format: "UPPERCASE"
+  separator: " "
+  max_tags_per_track: 10
+  
+  # Tags prioritaires
+  priority_tags:
+    - "MARIAGE"
+    - "CLUB"
+    - "COCKTAIL"
+    - "PEAK"
+    - "OUVERTURE"
+    - "FERMETURE"
+    
+  # Tags automatiques basés sur BPM
+  bpm_tags:
+    60-80: "LENT"
+    80-100: "MOYEN_LENT"
+    100-130: "MOYEN"
+    130-150: "RAPIDE"
+    150-180: "TRES_RAPIDE"
+    
+  # Tags automatiques basés sur l'énergie
+  energy_tags:
+    0.0-0.2: "TRES_CALME"
+    0.2-0.4: "CALME"
+    0.4-0.6: "MODERE"
+    0.6-0.8: "ENERGIQUE"
+    0.8-1.0: "EXPLOSIVE"
+
+# Cache et performance
+cache:
+  # Base de données SQLite
+  database:
+    path: "database/track_cache.db"
+    max_size_mb: 1000
+    cleanup_interval_days: 7
+    
+  # Cache mémoire
+  memory:
+    max_tracks: 1000
+    max_playlists: 50
+    ttl_hours: 1
+    
+  # Hit count
+  hit_count:
+    increment_on_access: true
+    decay_factor: 0.95
+    max_hits: 1000
+
+# Interface utilisateur
+ui:
+  # Thème
+  theme:
+    mode: "dark"
+    primary_color: "#4ECDC4"
+    secondary_color: "#45B7D1"
+    accent_color: "#FF6B9D"
+    
+  # Fenêtre
+  window:
+    default_width: 1200
+    default_height: 800
+    min_width: 1000
+    min_height: 600
+    
+  # Progress
+  progress:
+    update_interval_ms: 100
+    show_percentage: true
+    show_eta: true
+
+# Logging
+logging:
+  level: "INFO"
+  file: "logs/flowtag_pro.log"
+  max_size_mb: 10
+  backup_count: 5
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+
+# Sécurité
+security:
+  # Variables d'environnement requises
+  required_env_vars:
+    - "OPENAI_API_KEY"
+    - "SPOTIFY_CLIENT_ID"
+    - "SPOTIFY_CLIENT_SECRET"
+    - "DISCOGS_TOKEN"
+    
+  # Validation des fichiers
+  file_validation:
+    max_file_size_mb: 100
+    allowed_extensions:
+      - ".mp3"
+      - ".m4a"
+      - ".flac"
+      - ".wav"
+      - ".aiff"
+      - ".ogg" 

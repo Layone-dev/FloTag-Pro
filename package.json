@@ -1,0 +1,32 @@
+{
+  "name": "flowtag-pro",
+  "version": "1.0.0",
+  "description": "Assistant de tags DJ intelligent avec analyse audio et IA",
+  "main": "main.py",
+  "scripts": {
+    "start": "python3 main.py",
+    "install-deps": "pip install -r requirements.txt && npm install",
+    "build": "echo 'Build process for FlowTag Pro'"
+  },
+  "keywords": [
+    "dj",
+    "audio",
+    "tags",
+    "serato",
+    "music",
+    "analysis"
+  ],
+  "author": "FlowTag Pro Team",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.6.0",
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "python": ">=3.8"
+  }
+} 

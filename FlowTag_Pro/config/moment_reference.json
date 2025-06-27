@@ -1,0 +1,206 @@
+{
+  "moments": {
+    "ouverture": {
+      "name": "Ouverture",
+      "description": "Début de soirée, accueil des invités",
+      "time_range": "19:00-21:00",
+      "bpm_range": [80, 120],
+      "energy_range": [0.3, 0.6],
+      "mood": "accueillant",
+      "examples": [
+        "Jazz lounge",
+        "Ambient",
+        "Chill house",
+        "Acoustic covers"
+      ],
+      "serato_tags": ["OUVERTURE", "CALME", "AMBIANCE"]
+    },
+    "warm_up": {
+      "name": "Warm Up",
+      "description": "Échauffement progressif de l'ambiance",
+      "time_range": "21:00-22:30",
+      "bpm_range": [100, 130],
+      "energy_range": [0.4, 0.7],
+      "mood": "progressive",
+      "examples": [
+        "Nu-disco",
+        "Indie dance",
+        "Tropical house",
+        "Pop remixes"
+      ],
+      "serato_tags": ["WARM_UP", "MODEREE", "TRANSITION"]
+    },
+    "peak_time": {
+      "name": "Peak Time",
+      "description": "Pic de la soirée, maximum d'énergie",
+      "time_range": "22:30-01:30",
+      "bpm_range": [120, 160],
+      "energy_range": [0.7, 1.0],
+      "mood": "explosif",
+      "examples": [
+        "House",
+        "Techno",
+        "EDM",
+        "Hip-hop",
+        "Pop hits"
+      ],
+      "serato_tags": ["PEAK", "ENERGIQUE", "DANCE", "EXPLOSIVE"]
+    },
+    "cool_down": {
+      "name": "Cool Down",
+      "description": "Descente progressive de l'énergie",
+      "time_range": "01:30-02:30",
+      "bpm_range": [100, 130],
+      "energy_range": [0.4, 0.6],
+      "mood": "relaxant",
+      "examples": [
+        "Deep house",
+        "Chill trap",
+        "Ambient techno",
+        "Slow jams"
+      ],
+      "serato_tags": ["COOL_DOWN", "MODEREE", "CHILL"]
+    },
+    "fermeture": {
+      "name": "Fermeture",
+      "description": "Fin de soirée, morceaux de conclusion",
+      "time_range": "02:30-03:00",
+      "bpm_range": [70, 110],
+      "energy_range": [0.2, 0.5],
+      "mood": "nostalgique",
+      "examples": [
+        "Classics",
+        "Ballads",
+        "Acoustic",
+        "Ambient"
+      ],
+      "serato_tags": ["FERMETURE", "CALME", "CHILL"]
+    }
+  },
+  "contexts": {
+    "mariage": {
+      "name": "Mariage",
+      "description": "Événements de mariage",
+      "moments": {
+        "ceremonie": {
+          "name": "Cérémonie",
+          "bpm_range": [60, 90],
+          "energy_range": [0.1, 0.3],
+          "serato_tags": ["CEREMONIE", "ROMANTIQUE", "CALME"]
+        },
+        "cocktail": {
+          "name": "Cocktail",
+          "bpm_range": [80, 120],
+          "energy_range": [0.3, 0.6],
+          "serato_tags": ["COCKTAIL", "AMBIANCE", "MODEREE"]
+        },
+        "diner": {
+          "name": "Dîner",
+          "bpm_range": [70, 100],
+          "energy_range": [0.2, 0.4],
+          "serato_tags": ["DINER", "AMBIANCE", "CALME"]
+        },
+        "soiree": {
+          "name": "Soirée",
+          "bpm_range": [100, 140],
+          "energy_range": [0.5, 0.8],
+          "serato_tags": ["SOIREE", "FESTIF", "ENERGIQUE"]
+        }
+      }
+    },
+    "club": {
+      "name": "Club",
+      "description": "Clubs et boîtes de nuit",
+      "moments": {
+        "warm_up": {
+          "name": "Warm Up",
+          "bpm_range": [110, 130],
+          "energy_range": [0.4, 0.6],
+          "serato_tags": ["WARM_UP", "CLUB", "MODEREE"]
+        },
+        "peak": {
+          "name": "Peak",
+          "bpm_range": [125, 145],
+          "energy_range": [0.7, 1.0],
+          "serato_tags": ["PEAK", "CLUB", "ENERGIQUE"]
+        },
+        "after_hours": {
+          "name": "After Hours",
+          "bpm_range": [120, 140],
+          "energy_range": [0.6, 0.9],
+          "serato_tags": ["AFTER", "CLUB", "ENERGIQUE"]
+        }
+      }
+    },
+    "corporate": {
+      "name": "Corporate",
+      "description": "Événements d'entreprise",
+      "moments": {
+        "accueil": {
+          "name": "Accueil",
+          "bpm_range": [70, 100],
+          "energy_range": [0.2, 0.4],
+          "serato_tags": ["ACCUEIL", "CORPORATE", "CALME"]
+        },
+        "cocktail": {
+          "name": "Cocktail",
+          "bpm_range": [80, 110],
+          "energy_range": [0.3, 0.5],
+          "serato_tags": ["COCKTAIL", "CORPORATE", "MODEREE"]
+        },
+        "diner": {
+          "name": "Dîner",
+          "bpm_range": [60, 90],
+          "energy_range": [0.1, 0.3],
+          "serato_tags": ["DINER", "CORPORATE", "CALME"]
+        }
+      }
+    }
+  },
+  "energy_levels": {
+    "calme": {
+      "name": "Calme",
+      "range": [0.0, 0.3],
+      "description": "Énergie très basse, ambiance posée",
+      "serato_tag": "CALME"
+    },
+    "moderee": {
+      "name": "Modérée",
+      "range": [0.3, 0.6],
+      "description": "Énergie moyenne, ambiance équilibrée",
+      "serato_tag": "MODEREE"
+    },
+    "energique": {
+      "name": "Énergique",
+      "range": [0.6, 0.8],
+      "description": "Énergie élevée, ambiance dynamique",
+      "serato_tag": "ENERGIQUE"
+    },
+    "explosive": {
+      "name": "Explosive",
+      "range": [0.8, 1.0],
+      "description": "Énergie maximale, ambiance explosive",
+      "serato_tag": "EXPLOSIVE"
+    }
+  },
+  "bpm_ranges": {
+    "lent": {
+      "name": "Lent",
+      "range": [60, 90],
+      "description": "Tempo lent, morceaux posés",
+      "serato_tag": "LENT"
+    },
+    "moyen": {
+      "name": "Moyen",
+      "range": [90, 130],
+      "description": "Tempo moyen, morceaux équilibrés",
+      "serato_tag": "MOYEN"
+    },
+    "rapide": {
+      "name": "Rapide",
+      "range": [130, 180],
+      "description": "Tempo rapide, morceaux dynamiques",
+      "serato_tag": "RAPIDE"
+    }
+  }
+} 

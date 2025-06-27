@@ -1,0 +1,36 @@
+# Interface graphique moderne
+customtkinter==5.2.2
+
+# Traitement des images (pour les pochettes)
+Pillow==10.2.0
+
+# Lecture/écriture des tags audio
+mutagen==1.47.0
+
+# Client pour l'API OpenAI
+openai==1.23.6
+
+# Client pour l'API Spotify
+spotipy==2.23.0
+
+# Client pour l'API Discogs
+discogs-client==2.3.0
+
+# Gestion des variables d'environnement (API keys)
+python-dotenv==1.0.1
+
+# Interface utilisateur
+tkinter-tooltip>=2.0.0
+
+# Analyse audio
+librosa>=0.10.1
+numpy>=1.24.0
+scipy>=1.10.0
+
+# APIs et requêtes HTTP
+requests>=2.31.0
+aiohttp>=3.8.0
+
+# Utilitaires
+pyyaml>=6.0
+pathlib2>=2.3.7 
